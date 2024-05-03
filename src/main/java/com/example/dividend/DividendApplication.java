@@ -1,5 +1,9 @@
 package com.example.dividend;
 
+import com.example.dividend.model.Company;
+import com.example.dividend.model.ScrapedResult;
+import com.example.dividend.scraper.Scraper;
+import com.example.dividend.scraper.YahooFinanceScraper;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -16,33 +20,9 @@ public class DividendApplication {
     public static void main(String[] args) {
 //        SpringApplication.run(DividendApplication.class, args);
 
-        try {
-            Connection connection = Jsoup.connect("https://finance.yahoo.com/quote/COKE/history?frequency=1mo&period1=99153000&period2=1714666581");
-            Document document = connection.get();
-
-//            Elements eles = document.getElementsByAttributeValue("data-test", "historical-prices");
-            Elements eles = document.getElementsByClass("table svelte-ewueuo");
-            Element ele = eles.get(0);  // table 전체
-
-            Element tbody = ele.children().get(1);
-            for (Element e : tbody.children()) {
-                String txt = e.text();
-                if (!txt.endsWith("Dividend")) {
-                    continue;
-                }
-
-                String[] splits = txt.split(" ");
-                String month = splits[0];
-                int day = Integer.valueOf(splits[1].replace(",", ""));
-                int year = Integer.valueOf(splits[2]);
-                String dividend = splits[3];
-
-                System.out.println(year + "/" + month + "/" + day + " -> " + dividend);
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
+        Scraper scraper = new YahooFinanceScraper();
+//        var result = scraper.scrap(Company.builder().ticker("O").build());
+        var result = scraper.scrapCompanyByTicker("MMM");
+        System.out.println(result);
     }
 }
