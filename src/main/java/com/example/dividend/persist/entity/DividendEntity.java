@@ -1,10 +1,7 @@
 package com.example.dividend.persist.entity;
 
 import com.example.dividend.model.Dividend;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -15,6 +12,13 @@ import java.time.LocalDateTime;
 @Getter
 @ToString
 @NoArgsConstructor
+@Table(
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        columnNames =  {"companyId", "date"}    // companyId, date를 유니크키로 사용. 두 컬럼이 모두 같을 때 중복처리
+                )
+        }
+)
 public class DividendEntity {
 
     @Id
