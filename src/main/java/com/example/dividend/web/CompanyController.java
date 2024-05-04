@@ -24,6 +24,9 @@ public class CompanyController {
         return null;
     }
 
+    /**
+     * 페이징
+     */
     @GetMapping
     public ResponseEntity<?> searchCompany(final Pageable pageable) {
         Page<CompanyEntity> companies = companyService.getAllCompany(pageable);
@@ -32,8 +35,6 @@ public class CompanyController {
 
     /**
      * 회사 및 배당금 정보 추가
-     * @param request
-     * @return
      */
     @PostMapping
     public ResponseEntity<?> addCompany(@RequestBody Company request) {
