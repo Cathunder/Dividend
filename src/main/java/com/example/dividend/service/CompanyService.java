@@ -10,6 +10,7 @@ import com.example.dividend.scraper.Scraper;
 import lombok.AllArgsConstructor;
 import org.apache.commons.collections4.Trie;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
@@ -60,15 +61,25 @@ public class CompanyService {
         return company;
     }
 
-    public void addAutocompleteKeyword(String keyword) {
-        this.trie.put(keyword, null);   // (key, value)
+    // 자동완성 1 - LIKE
+    public List<String> getCompanyNamesByKeyword(String keyword) {
+        Pageable limit = PageRequest.of(0, 10);
+        Page<CompanyEntity> companyEntities = this.companyRepository.findByNameStartingWithIgnoreCase(keyword, limit);
+        return companyEntities.stream()
+                .map(e -> e.getName())
+                .collect(Collectors.toList());
     }
 
+    // 자동완성 2 - Trie
     public List<String> autocomplete(String keyword) {
         return (List<String>) this.trie.prefixMap(keyword).keySet()
                 .stream()
 //                .limit(10)
                 .collect(Collectors.toList());
+    }
+
+    public void addAutocompleteKeyword(String keyword) {
+        this.trie.put(keyword, null);   // (key, value)
     }
 
     public void deleteAutocompleteKeyword(String keyword) {
