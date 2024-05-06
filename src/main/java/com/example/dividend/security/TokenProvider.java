@@ -36,13 +36,13 @@ public class TokenProvider {
         Claims claims = Jwts.claims().setSubject(username);
         claims.put(KEY_ROLES, roles);
 
-        var now = new Date();
-        var expireDate = new Date(now.getTime() + TOKEN_EXPIRE_TIME);   // 유효시간
+        Date now = new Date();
+        Date expiredDate = new Date(now.getTime() + TOKEN_EXPIRE_TIME);   // 유효시간
 
         return Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(now)           // 토큰 생성 시간
-                .setExpiration(expireDate)  // 토큰 시간 만료
+                .setExpiration(expiredDate)  // 토큰 시간 만료
                 .signWith(SignatureAlgorithm.HS512, this.secretKey) // 사용할 알고리즘, 비밀키
                 .compact();
     }

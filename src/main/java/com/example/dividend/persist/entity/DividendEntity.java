@@ -4,14 +4,16 @@ import com.example.dividend.model.Dividend;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 
 import java.time.LocalDateTime;
 
-@Entity(name = "DIVIDEND")
 @Getter
+@Setter
 @ToString
 @NoArgsConstructor
+@Entity(name = "DIVIDEND")
 @Table(
         uniqueConstraints = {
                 @UniqueConstraint(

@@ -14,10 +14,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -65,10 +65,10 @@ public class CompanyService {
 
     // 자동완성 1 - LIKE
     public List<String> getCompanyNamesByKeyword(String keyword) {
-        Pageable limit = PageRequest.of(0, 10);
+        PageRequest limit = PageRequest.of(0, 10);
         Page<CompanyEntity> companyEntities = this.companyRepository.findByNameStartingWithIgnoreCase(keyword, limit);
         return companyEntities.stream()
-                .map(e -> e.getName())
+                .map(CompanyEntity::getName)
                 .collect(Collectors.toList());
     }
 
@@ -80,6 +80,7 @@ public class CompanyService {
 //                .collect(Collectors.toList());
 //    }
 
+    // 자동완성에 추가
     public void addAutocompleteKeyword(String keyword) {
         this.trie.put(keyword, null);   // (key, value)
     }
@@ -88,9 +89,10 @@ public class CompanyService {
         this.trie.remove(keyword);
     }
 
+    @Transactional
     public String deleteCompany(String ticker) {
-        var company = this.companyRepository.findByTicker(ticker)
-                .orElseThrow(() -> new NoCompanyException());
+        CompanyEntity company = this.companyRepository.findByTicker(ticker)
+                .orElseThrow(NoCompanyException::new);
 
         this.dividendRepository.deleteAllByCompanyId(company.getId());
         this.companyRepository.delete(company);

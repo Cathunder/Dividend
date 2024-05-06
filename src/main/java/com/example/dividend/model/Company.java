@@ -2,11 +2,12 @@ package com.example.dividend.model;
 
 import lombok.*;
 
-@Data
-@NoArgsConstructor
+@Getter
+@Setter
 @AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class Company {
-
     private String ticker;
     private String name;
 }

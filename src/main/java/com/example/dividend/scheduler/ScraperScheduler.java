@@ -15,7 +15,6 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Slf4j
@@ -39,19 +38,24 @@ public class ScraperScheduler {
         List<CompanyEntity> companies = this.companyRepository.findAll();
 
         // 회사마다 배당금 정보를 새로 스크래핑
-        for (var company : companies) {
+        for (CompanyEntity company : companies) {
             log.info("scraping scheduler is started -> " + company.getName());
             ScrapedResult scrapedResult =
-                    this.yahooFinanceScraper.scrap(new Company(company.getTicker(), company.getName()));
+                    this.yahooFinanceScraper.scrap(Company.builder()
+                            .name(company.getName())
+                            .ticker(company.getTicker())
+                            .build()
+                    );
 
             // 스크래핑한 배당금 정보 중 데이터베이스에 없는 값은 저장
             scrapedResult.getDividends().stream()
                     .map(e -> new DividendEntity(company.getId(), e))   // Dividend을 DividendEntity로 매핑
-                    .forEach(e -> {         // elemenet들을 dividendRepository에 삽입
-                        boolean exists = this.dividendRepository.existsByCompanyIdAndDate(e.getCompanyId(), e.getDate());
+                    .forEach(e -> {                                     // elemenet들을 dividendRepository에 삽입
+                        boolean exists =
+                                this.dividendRepository.existsByCompanyIdAndDate(e.getCompanyId(), e.getDate());
                         if (!exists) {
                             this.dividendRepository.save(e);
-                            log.info("insert new dividend -> " + e.toString());
+                            log.info("insert new dividend -> " + e);
                         }
                     });
 
@@ -63,18 +67,4 @@ public class ScraperScheduler {
             }
         }
     }
-
-
-
-//    // 테스트용 코드
-//    @Scheduled(fixedDelay = 1000)
-//    public void test1() throws InterruptedException {
-//        Thread.sleep(10000);
-//        System.out.println(Thread.currentThread().getName() + " -> 테스트 1 : " + LocalDateTime.now());
-//    }
-//
-//    @Scheduled(fixedDelay = 1000)
-//    public void test2() throws InterruptedException {
-//        System.out.println(Thread.currentThread().getName() + " -> 테스트 2 : " + LocalDateTime.now());
-//    }
 }

@@ -26,7 +26,7 @@ public class YahooFinanceScraper implements Scraper {
 
     @Override
     public ScrapedResult scrap(Company company) {
-        var scrapResult = new ScrapedResult();
+        ScrapedResult scrapResult = new ScrapedResult();
         scrapResult.setCompany(company);
 
         try {
@@ -60,6 +60,7 @@ public class YahooFinanceScraper implements Scraper {
 
                 dividends.add(new Dividend(LocalDateTime.of(year, month, day, 0, 0), dividend));
             }
+
             scrapResult.setDividends(dividends);
 
         } catch (IOException e) {
@@ -75,17 +76,15 @@ public class YahooFinanceScraper implements Scraper {
 
         try {
             Document document = Jsoup.connect(url).get();
-            Element titleEle = document.getElementsByClass("svelte-ufs8hf").get(0);
-            String title = titleEle.text();
-            if (title.contains(" - ")) {
-                title = title.split(" - ")[1].trim();
-            } else if (title.contains(" (")) {
-                title = title.split("\\(")[0].trim();
-            } else {
-                title = titleEle.text();
-            }
 
-            return new Company(ticker, title);
+            Element titleElement = document.getElementsByTag("h1").get(1);
+            String title = titleElement.text().split("\\(")[0].trim();
+
+            return Company.builder()
+                    .ticker(ticker)
+                    .name(title)
+                    .build();
+
         } catch (IOException e) {
             e.printStackTrace();
         }

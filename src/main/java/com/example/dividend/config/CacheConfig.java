@@ -30,7 +30,6 @@ public class CacheConfig {
         RedisCacheConfiguration conf = RedisCacheConfiguration.defaultCacheConfig()     // 기본 캐시 구성 가져오기
                 .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))     // 키를 직렬화 할 때 사용하는 방법 설정
                 .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer()));     // 값을 직렬화 할 때 사용하는 방법 설정
-//                .entryTtl(Duration.of(13123)) // 캐시 유효기한 설정
 
         return RedisCacheManager.RedisCacheManagerBuilder
                         .fromConnectionFactory(redisConnectionFactory)

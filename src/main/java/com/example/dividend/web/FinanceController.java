@@ -20,8 +20,8 @@ public class FinanceController {
      * 해당 회사의 전체 배당금 조회
      */
     @GetMapping("/dividend/{companyName}")
-    public ResponseEntity<?> searchFinance(@PathVariable(value = "companyName") String companyName) {
-        var result = this.financeService.getDividendByCompanyName(companyName);
+    public ResponseEntity<?> searchFinance(@PathVariable("companyName") String companyName) {
+        ScrapedResult result = this.financeService.getDividendByCompanyName(companyName);
         return ResponseEntity.ok(result);
     }
 }

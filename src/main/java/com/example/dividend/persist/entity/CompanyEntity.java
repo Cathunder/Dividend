@@ -4,12 +4,14 @@ import com.example.dividend.model.Company;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 
-@Entity(name = "COMPANY")
 @Getter
+@Setter
 @ToString
 @NoArgsConstructor
+@Entity(name = "COMPANY")
 public class CompanyEntity {
 
     @Id
