@@ -26,7 +26,7 @@ public class MemberEntity implements UserDetails {  // spring security 기능을
 
     private String password;
 
-    @ElementCollection(fetch = FetchType.EAGER)
+    @ElementCollection(fetch = FetchType.EAGER) // 컬렉션 객체임을 JPA가 알 수 있게 함
     private List<String> roles;     // 권한 2개 가질 수도 있으므로 list 사용함
 
     @Override
