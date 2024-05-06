@@ -30,8 +30,8 @@ public class TokenProvider {
         Claims claims = Jwts.claims().setSubject(username);
         claims.put(KEY_ROLES, roles);
 
-        var now = new Date();
-        var expireDate = new Date(now.getTime() + TOKEN_EXPIRE_TIME);   // 유효시간
+        Date now = new Date();
+        Date expireDate = new Date(now.getTime() + TOKEN_EXPIRE_TIME);   // 유효시간
 
         return Jwts.builder()
                 .setClaims(claims)
@@ -50,7 +50,7 @@ public class TokenProvider {
             return false;
         }
 
-        var claims = this.parseClaims(token);
+        Claims claims = this.parseClaims(token);
         return !claims.getExpiration().before(new Date()); // 만료시간을 현재시간과 비교
     }
 
