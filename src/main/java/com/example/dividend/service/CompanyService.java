@@ -72,12 +72,12 @@ public class CompanyService {
     }
 
     // 자동완성 2 - Trie
-    public List<String> autocomplete(String keyword) {
-        return (List<String>) this.trie.prefixMap(keyword).keySet()
-                .stream()
-//                .limit(10)
-                .collect(Collectors.toList());
-    }
+//    public List<String> autocomplete(String keyword) {
+//        return (List<String>) this.trie.prefixMap(keyword).keySet()
+//                .stream()
+////                .limit(10)
+//                .collect(Collectors.toList());
+//    }
 
     public void addAutocompleteKeyword(String keyword) {
         this.trie.put(keyword, null);   // (key, value)

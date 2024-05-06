@@ -24,8 +24,7 @@ public class FinanceService {
     private final CompanyRepository companyRepository;
     private final DividendRepository dividendRepository;
 
-//    @Cacheable(value = CacheKey.KEY_FINANCE, key = "#p0")
-//    @Cacheable(value = CacheKey.KEY_FINANCE, key = "#companyName")
+    @Cacheable(value = CacheKey.KEY_FINANCE, key = "#companyName")
     public ScrapedResult getDividendByCompanyName(String companyName) {
 
         log.info("search company -> " + companyName);
@@ -38,14 +37,6 @@ public class FinanceService {
         List<DividendEntity> dividendEntities = this.dividendRepository.findAllByCompanyId(company.getId());
 
         // 3. 결과 조합 후 반환
-//        List<Dividend> dividends = new ArrayList<>();
-//        for (var entity : dividendEntities) {
-//            dividends.add(Dividend.builder()
-//                    .date(entity.getDate())
-//                    .dividend(entity.getDividend())
-//                    .build());
-//        }
-
         List<Dividend> dividends = dividendEntities.stream()
                 .map(e -> new Dividend(e.getDate(), e.getDividend()))
                 .collect(Collectors.toList());

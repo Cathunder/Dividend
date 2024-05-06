@@ -46,10 +46,8 @@ public class ScraperScheduler {
 
             // 스크래핑한 배당금 정보 중 데이터베이스에 없는 값은 저장
             scrapedResult.getDividends().stream()
-                    // Dividend을 DividendEntity로 매핑
-                    .map(e -> new DividendEntity(company.getId(), e))
-                    // elemenet들을 dividendRepository에 삽입
-                    .forEach(e -> {
+                    .map(e -> new DividendEntity(company.getId(), e))   // Dividend을 DividendEntity로 매핑
+                    .forEach(e -> {         // elemenet들을 dividendRepository에 삽입
                         boolean exists = this.dividendRepository.existsByCompanyIdAndDate(e.getCompanyId(), e.getDate());
                         if (!exists) {
                             this.dividendRepository.save(e);
@@ -62,12 +60,11 @@ public class ScraperScheduler {
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }
-
-
         }
-
     }
 
+
+    
 //    // 테스트용 코드
 //    @Scheduled(fixedDelay = 1000)
 //    public void test1() throws InterruptedException {
