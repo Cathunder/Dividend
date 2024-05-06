@@ -76,10 +76,12 @@ public class YahooFinanceScraper implements Scraper {
 
         try {
             Document document = Jsoup.connect(url).get();
-            Element titleEle = document.getElementsByTag("h1").get(1);
+            Element titleEle = document.getElementsByClass("svelte-ufs8hf").get(0);
             String title = titleEle.text();
             if (title.contains(" - ")) {
                 title = title.split(" - ")[1].trim();
+            } else if (title.contains(" (")) {
+                title = title.split("\\(")[0].trim();
             } else {
                 title = titleEle.text();
             }
