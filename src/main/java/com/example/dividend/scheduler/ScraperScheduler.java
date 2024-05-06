@@ -51,6 +51,7 @@ public class ScraperScheduler {
                         boolean exists = this.dividendRepository.existsByCompanyIdAndDate(e.getCompanyId(), e.getDate());
                         if (!exists) {
                             this.dividendRepository.save(e);
+                            log.info("insert new dividend -> " + e.toString());
                         }
                     });
 
@@ -64,7 +65,7 @@ public class ScraperScheduler {
     }
 
 
-    
+
 //    // 테스트용 코드
 //    @Scheduled(fixedDelay = 1000)
 //    public void test1() throws InterruptedException {
