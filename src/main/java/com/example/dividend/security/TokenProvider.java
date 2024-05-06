@@ -1,11 +1,15 @@
 package com.example.dividend.security;
 
+import com.example.dividend.service.MemberService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -19,6 +23,8 @@ public class TokenProvider {
     private static final long TOKEN_EXPIRE_TIME = 1000 * 60 * 60; // 1시간
     private static final String KEY_ROLES = "roles";
 
+    private final MemberService memberService;
+
     @Value("${spring.jwt.secret}")
     private String secretKey;
 
@@ -30,8 +36,8 @@ public class TokenProvider {
         Claims claims = Jwts.claims().setSubject(username);
         claims.put(KEY_ROLES, roles);
 
-        Date now = new Date();
-        Date expireDate = new Date(now.getTime() + TOKEN_EXPIRE_TIME);   // 유효시간
+        var now = new Date();
+        var expireDate = new Date(now.getTime() + TOKEN_EXPIRE_TIME);   // 유효시간
 
         return Jwts.builder()
                 .setClaims(claims)
@@ -41,10 +47,17 @@ public class TokenProvider {
                 .compact();
     }
 
+    // jwt 토큰으로부터 인증정보 가져오기
+    public Authentication getAuthentication(String jwt) {
+        UserDetails userDetails = this.memberService.loadUserByUsername(this.getUsername(jwt));
+        return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities()); // 사용자정보, 사용자권한정보 를 포함한 토큰
+    }
+
     public String getUsername(String token) {
         return this.parseClaims(token).getSubject();
     }
 
+    // 토큰 유효성 검증
     public boolean validateToken(String token) {
         if (!StringUtils.hasText(token)) {
             return false;
