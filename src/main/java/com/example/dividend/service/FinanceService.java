@@ -24,7 +24,7 @@ public class FinanceService {
     private final CompanyRepository companyRepository;
     private final DividendRepository dividendRepository;
 
-    @Cacheable(value = CacheKey.KEY_FINANCE, key = "#companyName")
+//    @Cacheable(value = CacheKey.KEY_FINANCE, key = "#companyName")
     public ScrapedResult getDividendByCompanyName(String companyName) {
 
         log.info("search company -> " + companyName);
